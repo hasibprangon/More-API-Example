@@ -23,6 +23,9 @@ const displayMeals = meals => {
               <h5 class="card-title">${meal.strMeal}</h5>
               <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
                 content. This content is a little bit longer.</p>
+                <button onclick = "loadMealDetails2(${meal.idMeal})" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mealsDetailsModal">
+                Details
+                </button>
             </div>
           </div>
     `;
@@ -30,10 +33,43 @@ const displayMeals = meals => {
     });
 
 }
-const searchMeal = () =>{
+const searchMeal = () => {
     // console.log('hello')
     const searchText = document.getElementById('search-field').value;
     console.log(searchText);
     loadMeals(searchText)
 }
+
+const loadMealDetail = idMeal => {
+    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}
+    `
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displayMealsDetails(data.meals[0]))
+        .catch (error => {
+            console.log(error)
+        })
+}
+// async await
+const loadMealDetails2 = async(idMeal) =>{
+    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}
+    `
+   try{
+    const res = await fetch(url);
+    const data = await res.json();
+    displayMealsDetails(data.meals[0]);
+   }
+   catch(error){
+    console.log(error);
+   }
+} 
+
+const displayMealsDetails = meal => {
+    document.getElementById('mealsDetailsModalLabel').innerText = meal.strMeal;
+    document.getElementById('mealsDetailsBody').innerHTML =`
+    <img class="img-fluid" src="${meal.strMealThumb}">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam veniam mollitia autem magnam vel sunt aut dolorem quis commodi facilis.</p>
+    `;
+}
+
 loadMeals('beef'); 
